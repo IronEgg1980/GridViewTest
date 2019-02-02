@@ -53,7 +53,9 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.GridVi
         viewHolder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCurrentCell(i,0);
+                RadioButton button=(RadioButton)v;
+                button.setChecked(true);
+                entity.setChecked(0,true);
                 gridViewAdapterClickListener.OnClick(i,0);
             }
         });
@@ -62,7 +64,9 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.GridVi
         viewHolder.note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCurrentCell(i,8);
+                RadioButton button=(RadioButton)v;
+                button.setChecked(true);
+                entity.setChecked(8,true);
                 gridViewAdapterClickListener.OnClick(i,8);
             }
         });
@@ -73,7 +77,9 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.GridVi
             viewHolder.shift_buttons[j-1].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setCurrentCell(i,k);
+                    RadioButton button=(RadioButton)v;
+                    button.setChecked(true);
+                    entity.setChecked(k,true);
                     gridViewAdapterClickListener.OnClick(i,k);
                 }
             });
@@ -84,14 +90,5 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.GridVi
     public int getItemCount() {
         return list.size();
     }
-    public void setCurrentCell(int x, int y){
-        for(int i = 0;i<getItemCount();i++){
-            if(i == x)
-                continue;
-            GridViewEntity entity = list.get(i);
-            entity.clearChecked();
-        }
-        list.get(x).setChecked(y,true);
-        notifyDataSetChanged();
-    }
+
 }

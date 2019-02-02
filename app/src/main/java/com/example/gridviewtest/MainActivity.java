@@ -22,10 +22,15 @@ public class MainActivity extends AppCompatActivity {
     private void fillPersonList(){
         if(personList==null)
             personList = new ArrayList<>();
+        personList.clear();
         if(adapter == null)
             adapter = new InputAdapter(personList);
         for(int i = 1;i<19;i++){
             personList.add("人员"+i);
+        }
+        for(GridViewEntity entity:gridViewEntities){
+            String s = entity.getName();
+            personList.remove(s);
         }
         adapter.setList(personList);
     }
@@ -33,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         if (shiftList == null) {
             shiftList = new ArrayList<>();
         }
+        shiftList.clear();
         if(adapter == null)
             adapter = new InputAdapter(shiftList);
         for (int i = 1;i<10;i++){
@@ -58,14 +64,23 @@ public class MainActivity extends AppCompatActivity {
         gridViewAdapter.setGridViewAdapterClickListener(new GridViewAdapter.GridViewAdapterClickListener() {
             @Override
             public void OnClick(int _x, int _y) {
-                x = _x;
+                if(x < 0|| y <0){
+                    return;
+                }
+                GridViewEntity entity = gridViewEntities.get(x);
+                entity.setChecked(y,false);
+                gridViewAdapter.notifyItemRangeChanged(x,1);
                 y = _y;
+                if(_x!=x) {
+                    x = _x;
+                }
                 if(y == 0)
                     fillPersonList();
                 else if(y ==8)
                     Toast.makeText(MainActivity.this,"设置备注",Toast.LENGTH_SHORT).show();
                 else
                     fillShiftList();
+                gridViewAdapter.notifyItemRangeChanged(x,1);
             }
         });
         gridViewRecyclerView.setAdapter(gridViewAdapter);
@@ -79,40 +94,79 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 GridViewEntity entity = gridViewEntities.get(x);
+
                 if(y == 0) {
                     entity.setName(s);
-                    if(x < gridViewEntities.size() - 1)
-                        x = x +1;
+                    fillPersonList();
+                    if(x < gridViewEntities.size() - 1) {
+                        x = x + 1;
+                        entity.setChecked(0,false);
+                        GridViewEntity entity1 = gridViewEntities.get(x);
+                        entity1.setChecked(0,true);
+                        gridViewAdapter.notifyItemRangeChanged(x-1,2);
+                    }else{
+                        gridViewAdapter.notifyItemRangeChanged(x,1);
+                    }
                 }
-//                else if(y ==8)
-//                    Toast.makeText(MainActivity.this,"设置备注",Toast.LENGTH_SHORT).show();
+                else if(y ==8)
+                    Toast.makeText(MainActivity.this,"设置备注",Toast.LENGTH_SHORT).show();
                 else{
                     entity.setShift(y,s);
                     if(y<7){
+                        entity.setChecked(y,false);
                         y = y+1;
-                    }else if(x < gridViewEntities.size() - 1){
-                        x = x +1;
+                        entity.setChecked(y,true);
+                        gridViewAdapter.notifyItemRangeChanged(x,1);
+                    }else if(x < gridViewEntities.size() - 1) {
+                        entity.setChecked(y,false);
+                        x = x + 1;
                         y = 1;
+                        GridViewEntity entity1 = gridViewEntities.get(x);
+                        entity1.setChecked(1,true);
+                        gridViewAdapter.notifyItemRangeChanged(x-1,2);
+                    }else{
+                        gridViewAdapter.notifyItemRangeChanged(x,1);
                     }
                 }
-                gridViewAdapter.setCurrentCell(x,y);
+                gridViewRecyclerView.smoothScrollToPosition(x);
             }
         });
         bottomRecyclerView.setAdapter(adapter);
         bottomRecyclerView.setLayoutManager(manager2);
-        findViewById(R.id.clear_button).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GridViewEntity entity = new GridViewEntity("",new String[7],"");
                 entity.setChecked(0,true);
                 fillPersonList();
                 gridViewEntities.add(entity);
+                if(x >=0){
+                    gridViewEntities.get(x).clearChecked();
+                }
                 x  = gridViewEntities.size() -1;
                 y = 0;
-                gridViewAdapter.setCurrentCell(x,y);
                 gridViewAdapter.notifyDataSetChanged();
+                gridViewRecyclerView.smoothScrollToPosition(x);
             }
         });
-        gridViewAdapter.setCurrentCell( 0 , 0 );
+        findViewById(R.id.clear_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(x<0||y<0){
+                    return;
+                }
+                GridViewEntity entity = gridViewEntities.get(x);
+                if(y == 0) {
+                    entity.setName("");
+                    fillPersonList();
+                }
+                else if(y ==8)
+                    Toast.makeText(MainActivity.this,"设置备注",Toast.LENGTH_SHORT).show();
+                else{
+                    entity.setShift(y,"");
+                }
+                gridViewAdapter.notifyItemRangeChanged(x,1);
+            }
+        });
     }
 }

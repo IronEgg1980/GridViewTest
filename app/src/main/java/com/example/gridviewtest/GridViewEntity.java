@@ -55,7 +55,6 @@ public class GridViewEntity {
         isCurrentCell = currentCell;
     }
     public void setChecked(int y,boolean flag){
-        clearChecked();
         isCurrentCell[y] = flag;
     }
     public void clearChecked(){
