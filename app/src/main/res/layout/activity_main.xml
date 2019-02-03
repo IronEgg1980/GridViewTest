@@ -12,16 +12,26 @@
         android:id="@+id/gridview_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="1dp"
+        android:layout_marginBottom="8dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_recyclerview"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/bottom_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="40dp"
         android:background="@android:color/darker_gray"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -29,11 +39,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/bottom_recyclerview"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
 
         <Button
             android:id="@+id/clear_button"
@@ -45,6 +50,18 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="增加" />
+
+        <Button
+            android:id="@+id/dele_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="删除" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="保存" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

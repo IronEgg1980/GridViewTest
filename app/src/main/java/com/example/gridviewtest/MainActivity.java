@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         gridViewEntities = new ArrayList<>();
         GridViewEntity entity1 = new GridViewEntity("",new String[7],"");
         gridViewEntities.add(entity1);
-        gridViewAdapter = new GridViewAdapter(gridViewEntities);
+        gridViewAdapter = new GridViewAdapter(this,gridViewEntities);
         gridViewAdapter.setGridViewAdapterClickListener(new GridViewAdapter.GridViewAdapterClickListener() {
             @Override
             public void OnClick(int _x, int _y) {
@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 GridViewEntity entity = gridViewEntities.get(x);
                 entity.setChecked(y,false);
-                gridViewAdapter.notifyItemRangeChanged(x,1);
                 y = _y;
                 if(_x!=x) {
                     x = _x;
@@ -80,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,"设置备注",Toast.LENGTH_SHORT).show();
                 else
                     fillShiftList();
-                gridViewAdapter.notifyItemRangeChanged(x,1);
+                gridViewEntities.get(x).setChecked(y,true);
+                gridViewAdapter.notifyDataSetChanged();
             }
         });
         gridViewRecyclerView.setAdapter(gridViewAdapter);
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.setInputClickListener(new InputAdapter.InputClickListener() {
             @Override
             public void OnClick(String s) {
-                if(x < 0|| y <0){
+                if(x < 0|| y <0||gridViewEntities.size() == 0){
                     return;
                 }
                 GridViewEntity entity = gridViewEntities.get(x);
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.clear_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(x<0||y<0){
+                if(x<0||y<0||gridViewEntities.size() == 0){
                     return;
                 }
                 GridViewEntity entity = gridViewEntities.get(x);
@@ -166,6 +166,24 @@ public class MainActivity extends AppCompatActivity {
                     entity.setShift(y,"");
                 }
                 gridViewAdapter.notifyItemRangeChanged(x,1);
+            }
+        });
+        findViewById(R.id.dele_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(x<0||y<0||gridViewEntities.size() == 0)
+                    return;
+                gridViewEntities.remove(x);
+                if(gridViewAdapter.getItemCount() > 0){
+                    if(x >gridViewAdapter.getItemCount() -1)
+                        x = gridViewAdapter.getItemCount() -1;
+                    gridViewEntities.get(x).setChecked(y,true);
+                }else{
+                    x = -1;
+                }
+                gridViewAdapter.notifyDataSetChanged();
+                if(y == 0)
+                    fillPersonList();
             }
         });
     }

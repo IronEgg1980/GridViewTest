@@ -1,18 +1,22 @@
 package com.example.gridviewtest;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import java.util.List;
 
 public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.GridViewHolder> {
     class GridViewHolder extends RecyclerView.ViewHolder{
         RadioButton[] shift_buttons;
-        RadioButton name,note;
+        RadioButton note;
+        TextView name;
         public GridViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.item_name);
@@ -36,7 +40,11 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.GridVi
 
     private GridViewAdapterClickListener gridViewAdapterClickListener;
     private List<GridViewEntity> list;
-    public GridViewAdapter(List<GridViewEntity> _list){
+    private Context context;
+    private Resources resource;
+    public GridViewAdapter(Context _context,List<GridViewEntity> _list){
+        context = _context;
+        resource = _context.getResources();
         list = _list;
     }
     @Override
@@ -49,13 +57,14 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.GridVi
     public void onBindViewHolder(GridViewHolder viewHolder, final int i) {
         final GridViewEntity entity = list.get(i);
         viewHolder.name.setText(entity.getName());
-        viewHolder.name.setChecked(entity.isCurrentCell()[0]);
+        if(entity.isCurrentCell()[0])
+            viewHolder.name.setBackground(resource.getDrawable(R.drawable.radio_checked));
+        else
+            viewHolder.name.setBackground(resource.getDrawable(R.drawable.radio_unchecked));
         viewHolder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RadioButton button=(RadioButton)v;
-                button.setChecked(true);
-                entity.setChecked(0,true);
+//                entity.setChecked(0,true);
                 gridViewAdapterClickListener.OnClick(i,0);
             }
         });
@@ -64,9 +73,8 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.GridVi
         viewHolder.note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RadioButton button=(RadioButton)v;
-                button.setChecked(true);
-                entity.setChecked(8,true);
+//                RadioButton button=(RadioButton)v;
+//                entity.setChecked(8,true);
                 gridViewAdapterClickListener.OnClick(i,8);
             }
         });
@@ -77,9 +85,8 @@ public class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.GridVi
             viewHolder.shift_buttons[j-1].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RadioButton button=(RadioButton)v;
-                    button.setChecked(true);
-                    entity.setChecked(k,true);
+//                    RadioButton button=(RadioButton)v;
+//                    entity.setChecked(k,true);
                     gridViewAdapterClickListener.OnClick(i,k);
                 }
             });
